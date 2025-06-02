@@ -28,5 +28,17 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
+        <!-- There are some Mockito annotations that help minimize the code for creating and injecting mocks. While writing tests, there can be some repetitive statements. We will use annotations provided by Mockito to get rid of the redundant code and make our tests more readable. -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- For running test. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

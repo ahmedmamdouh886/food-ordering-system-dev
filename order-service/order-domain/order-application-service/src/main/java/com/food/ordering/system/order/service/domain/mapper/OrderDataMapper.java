@@ -7,12 +7,12 @@ import com.food.ordering.system.domain.valueobject.RestaurantId;
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand;
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.order.service.domain.dto.create.OrderAddress;
+import com.food.ordering.system.order.service.domain.dto.track.TrackOrderResponse;
 import com.food.ordering.system.order.service.domain.entity.Order;
 import com.food.ordering.system.order.service.domain.entity.OrderItem;
 import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.valueobject.StreetAddress;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,10 +33,19 @@ public class OrderDataMapper {
                 .build();
     }
 
-    public CreateOrderResponse orderToCreateOrderResponse(Order order) {
+    public CreateOrderResponse orderToCreateOrderResponse(Order order, String message) {
         return CreateOrderResponse.builder()
                 .orderTrackingId(order.getTrackingId().getValue())
                 .orderStatus(order.getOrderStatus())
+                .message(message)
+                .build();
+    }
+
+    public TrackOrderResponse orderToTrackOrderResponse(Order order) {
+        return TrackOrderResponse.builder()
+                .orderTrackingId(order.getTrackingId().getValue())
+                .orderStatus(order.getOrderStatus())
+                .failureMessages(order.getFailureMessages())
                 .build();
     }
 

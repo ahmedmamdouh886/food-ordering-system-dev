@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>kafka</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <description>For modelling data that will be exchanged between producer and consumer in the message queue(Kafka).</description>
+
+    <artifactId>kafka-model</artifactId>
+
+    <name>kafka-model</name>
+
+    <dependencies>
+        <!--
+            We're gonna model our data with avro.
+        -->
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+               I will use this plugin to create the avro Java classes from the Avro schema files.
+            -->
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>${avro.version}</version>
+                <configuration>
+                    <!--
+                        Here you see that stringType sets to Java string and decimal logical type is enabled,
+                        so that I will be able to use decimal type for the price fields.
+                    -->
+                    <stringType>String</stringType>
+                    <enableDecimalLogicalType>true</enableDecimalLogicalType>
+                </configuration>
+                <!--
+                    This is configuration when you run maven install command.
+                    It will create Avro classes during the "generate-sources" phase.
+                -->
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase> <!-- Generate sources phase. -->
+                        <goals>
+                            <goal>schema</goal> <!-- The goal is set to schema. -->
+                        </goals>
+                        <configuration>
+                            <!--
+                            Avro schema files will be in this directory.
+                            This directory has 4 schema files, one for each Kafka topics.
+                            -->
+                            <sourceDirectory>src/main/resources/avro</sourceDirectory>
+                            <outputDirectory>src/main/java</outputDirectory> <!-- The generated Avro Java classes will be in this package. -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
