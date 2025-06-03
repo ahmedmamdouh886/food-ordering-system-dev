@@ -10,6 +10,7 @@
     <packaging>jar</packaging>
     <name>order-application-service</name>
     <url>http://maven.apache.org</url>
+
     <dependencies>
         <!-- We added the order-domain-core dependency here to let order-application-service module call the core logic.  -->
         <dependency>
