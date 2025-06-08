@@ -12,8 +12,7 @@
     <description>
         For creating the runnable JAR file for the microservices and have a dependency to all of our modules, and it will contain all other modules.
         It will simply have a dependency to all modules to create a single,
-        runnable JAR file and run it as a microservice and also create a Docker image
-        to use it later in cloud deployment.
+        runnable JAR file and run it as a microservice and also create a Docker image to use it later in cloud deployment.
         See this lesson "Assembling the Application chapter --> Why Even Care About Assembly?" in the "hexagonal-architecture-web-apps course" on educative.io.
     </description>
 

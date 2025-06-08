@@ -9,15 +9,37 @@
     <artifactId>order-application</artifactId>
     <name>Archetype - order-application</name>
     <url>http://maven.apache.org</url>
-    <description>This module will be the initial contact point from the clients, and it should pass the request into the domain layer.</description>
+    <description>This module will be the initial contact point from the clients, and it should pass the request into the domain layer. That's why we have a dependency to order-application-service.</description>
     <dependencies>
         <!--
-            This module will be the initial contact point from the clients, and it should pass the request into the domain layer,
-            so it should have a dependency to order-application-service.
+            This dependency to use the input ports of the domain layer in our REST API.
         -->
         <dependency>
             <groupId>com.food.ordering.system</groupId>
             <artifactId>order-application-service</artifactId>
+        </dependency>
+        <!--
+            This dependency to bring the required libraries to implement REST API.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--
+            This dependency is for using ErrorDTO from common-application module in this module.
+        -->
+        <dependency>
+            <groupId>com.food.ordering.system</groupId>
+            <artifactId>common-application</artifactId>
+        </dependency>
+
+        <!--
+            This dependency to to implement data validation.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
     </dependencies>
 </project>
