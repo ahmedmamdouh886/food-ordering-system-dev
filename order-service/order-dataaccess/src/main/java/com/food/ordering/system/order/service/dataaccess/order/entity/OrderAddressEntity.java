@@ -12,13 +12,14 @@ import java.util.UUID;
 @NoArgsConstructor
 // It's required, because Spring will need no-args-constructor to create a proxy object from this class.
 @AllArgsConstructor // It's required to use the builder pattern with @Builder annotation. That's why we used it here.
+@IdClass(OrderAddressEntityId.class)
 @Table(name = "order_address")
 @Entity
 public class OrderAddressEntity {
     @Id
     private UUID id;
 
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ORDER_ID")
     private OrderEntity order;
 

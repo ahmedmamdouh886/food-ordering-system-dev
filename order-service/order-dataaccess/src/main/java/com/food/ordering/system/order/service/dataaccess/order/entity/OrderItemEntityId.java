@@ -1,10 +1,16 @@
 package com.food.ordering.system.order.service.dataaccess.order.entity;
 
+import lombok.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-// So, this ID class annotation is required to use an ID class in an entity with multi column primary key.
 // This class is required to create multi-column primary key. See @IdClass(OrderItemEntityId.class) in OrderItemEntity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderItemEntityId implements Serializable {
     private Long id;
     private OrderEntity order;

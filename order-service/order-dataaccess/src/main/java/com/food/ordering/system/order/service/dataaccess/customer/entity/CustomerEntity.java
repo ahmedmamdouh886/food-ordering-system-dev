@@ -19,7 +19,7 @@ import java.util.UUID;
  * problematic coupling between the services. Therefore, I prefer to use this approach for data required from
  * other domains.
  */
-@Table(name = "order_customer_m_view", schema = "customers") // As mentioned previously for the early examples, I will use a materialized view from the customer database schema in the order service.
+@Table(name = "order_customer_m_view", schema = "customer") // As mentioned previously for the early examples, I will use a materialized view from the customer database schema in the order service.
 @Entity
 public class CustomerEntity {
 

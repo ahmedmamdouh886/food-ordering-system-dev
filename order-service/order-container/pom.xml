@@ -7,8 +7,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>order-container</artifactId>
-    <name>Archetype - order-container</name>
-    <url>http://maven.apache.org</url>
+    <name>order-container</name>
     <description>
         For creating the runnable JAR file for the microservices and have a dependency to all of our modules, and it will contain all other modules.
         It will simply have a dependency to all modules to create a single,
@@ -43,7 +42,62 @@
             <groupId>com.food.ordering.system</groupId>
             <artifactId>order-messaging</artifactId>
         </dependency>
+
+        <!--
+            This is required, because I will have this Spring Boot Main class in this module, and it'll start the Spring Boot application for the order service.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <!--
+                I will also add Spring Boot maven plugin to create a runnable jar file for this microservice and also to create a Docker image during maven install command using the build-image call of spring-boot-maven-plugin. For the image name, I will use ${project.groupId}/order.service:${project.version}.
+
+                🔧 spring-boot-maven-plugin
+                    This plugin is Spring Boot-specific. It helps you package your application into an executable JAR (or WAR), making it easy to deploy and run.
+
+                    ✅ What it does:
+                    Packages your app with an embedded server (like Tomcat)
+
+                    Allows mvn spring-boot:run for quick local development
+                    Bundles all dependencies into a single runnable JAR
+                    🚫 What it doesn’t do:
+
+                    It does not control the Java compiler version
+                    It does not support annotation processors like Lombok
+
+                    🧠 TL;DR — Use Them Together
+                        Plugin Use it for...
+                        maven-compiler-plugin Compiling your code with correct Java version and annotation processors
+                        spring-boot-maven-plugin Packaging and running your Spring Boot application
+
+                        Both are essential — just for different parts of the build lifecycle.
+            -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>${project.groupId}/order.service:${project.version}</name>
+                        <env>
+                            <BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
+                        </env>
+                    </image>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build-image</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

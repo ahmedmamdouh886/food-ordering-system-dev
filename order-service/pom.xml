@@ -8,7 +8,7 @@
     </parent>
     <artifactId>order-service</artifactId>
     <packaging>pom</packaging>
-    <name>Archetype - order-service</name>
+    <name>order-service</name>
     <url>http://maven.apache.org</url>
     <modules>
         <module>order-domain</module>

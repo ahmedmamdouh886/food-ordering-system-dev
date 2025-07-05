@@ -33,7 +33,7 @@ public class PaymentResponseKafkaListener implements KafkaConsumer<PaymentRespon
     @Override
     @KafkaListener(
             id = "${kafka-consumer-config.payment-consumer-group-id}",
-            topics = "${order-service.payment-response-topic}"
+            topics = "${order-service.payment-response-topic-name}"
     ) // It's Kafka annotation, which creates Kafka consumer from a simple java method. id and topics properties comes from application configuration.
     public void receive(
             @Payload List<PaymentResponseAvroModel> messages,

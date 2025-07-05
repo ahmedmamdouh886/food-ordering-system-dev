@@ -1,0 +1,73 @@
+server:
+  port: 8181
+
+logging:
+  level:
+    com.food.ordering.system: DEBUG
+
+# We reference this config in the code, so please search for order-service in the code.
+order-service:
+  payment-request-topic-name: payment-request
+  payment-response-topic-name: payment-response
+  restaurant-approval-request-topic-name: restaurant-approval-request
+  restaurant-approval-response-topic-name: restaurant-approval-response
+
+spring:
+  jpa:
+    open-in-view: false # This will keep a database connection open for a long time which would have really bad effects on database performance. It's enabled in spring by default, so I set it to false here, to prevent this behavior.
+    show-sql: true # Show each sql on the log, for debugging purposes.
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=order&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified # For the current schema, I used order here. So I will create a schema called, "order" in the Postgres default database. Here you also see Binary Transfer and rewrite batched inserts through properties. With binary transfer, the data will be transferred from Postgres server to JDBC driver in Binary form. So it'll be transferred faster as this will eliminate the need for conversion like converting a number from their text representation to their Binary representation. With the rewrite batched inserts property, I will increase the batch insert performance, by rewriting the batch inserts to use multi-values. That means, it'll use a single insert statement with multiple values instead of using multiple insert statements which will increase the insert performance. And this string type on specified property, will tell JDBC driver to send all strings untyped. I use this to use UUID fields, and to prevent string checking on UUID type on Postgres.
+    username: postgres
+    password: passwd
+    driver-class-name: org.postgresql.Driver
+    platform: postgres
+  sql:
+    init:
+      mode: ALWAYS # This means the schema file below classpath:init-schema.sql will run each time I start the Spring Boot application.
+      schema-locations: classpath:init-schema.sql
+
+# We reference this config in the code, so please search for kafka-config in the code.
+kafka-config:
+  bootstrap-servers: localhost:19092, localhost:29092, localhost:39092 # These ports exposed in the docker compose file of kafka cluster under the infrastructure module.
+  schema-registry-url-key: schema.registry.url
+  schema-registry-url: http://localhost:8081 # Exposed in the docker compose file of kafka cluster under the infrastructure module.
+  num-of-partitions: 3 # Remember that, with three partitions, I can run three concurrent Kafka consumers and scale better.
+  replication-factor: 3 # And with replication factors set as three, I can have better resiliency because it'll keep the replicated data in three different partitions, in three different brokers. Remember, I have three brokers in Docker Compose definition of Kafka cluster
+
+# We reference this config in the code, so please search for kafka-producer-config in the code.
+kafka-producer-config:
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer # For Kafka producer config, I set key serializer class as string serializer. Because my key will be the string representation of order ID.
+  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer # And for value, here I use KafkaAvroSerializer, which is a class in Confluent library. Remember that, I have created the Avro models in the Kafka model module to send data to Kafka in AvroSerialized form, for example KafkaProducer<String, PaymentRequestAvroModel>.
+  compression-type: snappy # For the compression type I use snappy here. The compression options that Kafka supports are, Gzip, Lz4, Zstd, and Snappy. Among these options, Snappy gives a good balance of CPU usage, compression ratio, speed, and network utilization. For example, jzip will compress more, but it'll be slower and Lz4 will compress less, and it'll be faster. But in that case, network bandwidth will be higher.
+  acks: all # Acknowledge property is set to all here. That means the Kafka producer, will wait acknowledgement from each broker, before confirming the produce operation. If you use acknowledge one, a confirmation from the target broker that gets the requests from the producer clients will be enough. And with acknowledge zero, producer will not wait any confirmation from the Kafka brokers. As you can imagine, this will lead to a non-resilient system. So keeping the Acknowledge all is a best practice.
+  batch-size: 16384 # Here I use 16 kilobytes which is the default value. This batch size, will be used to send the data in batches from producer to Kafka Brokers.
+  batch-size-boost-factor: 100 # And also, here I have a boost factor to allow increasing the batch size.
+  linger-ms: 5 # In Kafka, linger.ms is a producer configuration that controls the maximum time a producer will wait before sending a batch of records to a Kafka broker, even if the batch hasn't reached its maximum size. This setting, which defaults to 0 milliseconds, allows producers to improve throughput by reducing the number of network requests, especially under moderate load. By adding a small delay, more messages can be bundled together in a single batch before being sent. Linger-ms is used to add a delay on producer, before sending the data. This makes sense when there is a light load on producer. With light load, producer will send data to broker, even if the batch size limit is not reached. So by using a delay with this linger-ms property, you can increase the batch size so you can increase the throughput on the producer side.
+  request-timeout-ms: 60000 # Request-timeout is the timeout value, that producer will throw a time-out error, in case no response comes from the Kafka broker.
+  retry-count: 5 # It'll retry five times in case of error on the producer side.
+
+# We reference this config in the code, so please search for kafka-consumer-config in the code.
+# Listen to lesson named, 41. Container module: Explaining kafka consumer properties in the course to understand these configuration properties.
+kafka-consumer-config:
+  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+  payment-consumer-group-id: payment-topic-consumer
+  restaurant-approval-consumer-group-id: restaurant-approval-topic-consumer
+  auto-offset-reset: earliest
+  specific-avro-reader-key: specific.avro.reader
+  specific-avro-reader: true
+  batch-listener: true # Allow to consume data in batches instead of one by one.
+  auto-startup: true
+  concurrency-level: 3 # If you add more than 3 (which is more than the partitions we have, the rest will be idle until you add the equivalent partitions). Equals to the partitions number. In the context of Kafka, concurrency-level refers to the number of consumer threads that can process messages from a topic concurrently. A higher concurrency level allows for more parallel message consumption, potentially improving throughput and reducing latency, especially when dealing with many partitions and consumers.
+  session-timeout-ms: 10000 # If a broker doesn't get at least a heartbeat signal from the consumer in this timeout, the broker will mark the consumer as dead, and it will be removed from the consumer group.
+  heartbeat-interval-ms: 3000 # The consumer will send a heartbeat signals to the broker every 3 seconds. It's recommended to wait for missing heartbeat signals before marking the consumer as dead because the network can fail temporarily. That's why we set this value to 1 third to session-timeout-ms property so it will try 3 times(10000 / 3000, roughly) before timing-out and before consumer removed from the consumer group.
+  max-poll-interval-ms: 300000 # Too important, listen to the lesson.
+  max-poll-records: 500 # The consumer fetches 500 records at maximum at a time in each call.
+  max-partition-fetch-bytes-default: 1048576 # The maximum size the consumer fetches in each call.
+  max-partition-fetch-bytes-boost-factor: 1 # Too important, listen to the lesson.
+  poll-timeout-ms: 150 # Too important, listen to the lesson.
