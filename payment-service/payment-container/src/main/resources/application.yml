@@ -20,7 +20,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=payment&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
     username: postgres
-    password: passwd
+#    password: passwd
+    password: Samara49?
     driver-class-name: org.postgresql.Driver
     platform: postgres
   sql:

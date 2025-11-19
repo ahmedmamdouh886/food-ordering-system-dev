@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static com.food.ordering.system.order.service.domain.entity.Order.FAILURE_MESSAGE_DELIMITER;
 
 /**
- * This class is a mapper for creating entity objects from domain objects, and create domain objects from entity objects.
+ * This class is a mapper for creating entity objects from domain objects, and creating domain objects from entity objects.
  */
 @Component
 public class OrderDataAccessMapper {

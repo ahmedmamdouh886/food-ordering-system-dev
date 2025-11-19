@@ -23,7 +23,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=order&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified # For the current schema, I used order here. So I will create a schema called, "order" in the Postgres default database. Here you also see Binary Transfer and rewrite batched inserts through properties. With binary transfer, the data will be transferred from Postgres server to JDBC driver in Binary form. So it'll be transferred faster as this will eliminate the need for conversion like converting a number from their text representation to their Binary representation. With the rewrite batched inserts property, I will increase the batch insert performance, by rewriting the batch inserts to use multi-values. That means, it'll use a single insert statement with multiple values instead of using multiple insert statements which will increase the insert performance. And this string type on specified property, will tell JDBC driver to send all strings untyped. I use this to use UUID fields, and to prevent string checking on UUID type on Postgres.
     username: postgres
-    password: passwd
+#    password: passwd
+    password: Samara49?
     driver-class-name: org.postgresql.Driver
     platform: postgres
   sql:
