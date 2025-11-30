@@ -14,11 +14,12 @@
   <version>1.0-SNAPSHOT</version>
   <name>food-ordering-system</name>
   <modules>
-    <module>order-service</module>
-    <module>common</module>
-    <module>infrastructure</module>
-    <module>customer-service</module>
-    <module>payment-service</module>
+      <module>order-service</module>
+      <module>common</module>
+      <module>infrastructure</module>
+      <module>infrastructure/kafka</module>
+      <module>customer-service</module>
+      <module>payment-service</module>
       <module>restaurant-service</module>
   </modules>
 
@@ -37,13 +38,17 @@
 
   <dependencyManagement>
     <dependencies>
-      <!--
+        <!--
       I don't need to put order-container here because order containers will not be used by other modules.
       It will simply have a dependency to all modules to create a single,
       runnable JAR file and run it as a microservice and also create a Docker image
       to use it later in cloud deployment.
       -->
-
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>saga</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
       <dependency>
         <groupId>com.food.ordering.system</groupId>
         <artifactId>order-domain-core</artifactId>
@@ -156,8 +161,9 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>4.3.1</version>
-        <scope>${mockito.version}</scope> <!-- We used scope as it's only required for test. -->
+<!--        <version>4.3.1</version>-->
+        <version>${mockito.version}</version>
+        <scope>test</scope> <!-- We used scope as it's only required for test. -->
       </dependency>
     </dependencies>
   </dependencyManagement>
