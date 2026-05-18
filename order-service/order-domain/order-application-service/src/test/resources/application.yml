@@ -1,0 +1,3 @@
+order-service:
+  outbox-scheduler-fixed-rate: 10000 # Pulling the outbox table every 10 seconds. On production should be less than 10 seconds depending on the processing time of saga operation. Ideally, these rates shouldn't be more than two seconds.
+  outbox-scheduler-initial-delay: 10000

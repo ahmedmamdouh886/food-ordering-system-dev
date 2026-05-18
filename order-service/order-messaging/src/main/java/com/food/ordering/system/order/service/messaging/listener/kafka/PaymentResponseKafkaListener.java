@@ -2,9 +2,11 @@ package com.food.ordering.system.order.service.messaging.listener.kafka;
 
 import com.food.ordering.system.kafka.consumer.KafkaConsumer;
 import com.food.ordering.system.kafka.order.avro.model.PaymentResponseAvroModel;
+import com.food.ordering.system.order.service.domain.exception.OrderNotFoundException;
 import com.food.ordering.system.order.service.domain.ports.input.message.listener.payment.PaymentResponseMessageListener;
 import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDataMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -49,16 +51,37 @@ public class PaymentResponseKafkaListener implements KafkaConsumer<PaymentRespon
                 offsets.toString()
         );
 
+
         messages.forEach(paymentResponseAvroModel -> {
-            if (PaymentStatus.COMPLETED == paymentResponseAvroModel.getPaymentStatus()) {
-                log.info("Processing successful payment for order id: {}", paymentResponseAvroModel.getOrderId());
-                paymentResponseMessageListener.paymentCompleted(orderMessagingDataMapper
-                        .paymentResponseAvroModelToPaymentResponse(paymentResponseAvroModel));
-            } else if (PaymentStatus.CANCELLED == paymentResponseAvroModel.getPaymentStatus() ||
-                    PaymentStatus.FAILED == paymentResponseAvroModel.getPaymentStatus()) {
-                log.info("Processing unsuccessful payment for order id: {}", paymentResponseAvroModel.getOrderId());
-                paymentResponseMessageListener.paymentCancelled(orderMessagingDataMapper
-                        .paymentResponseAvroModelToPaymentResponse(paymentResponseAvroModel));
+            try {
+                if (PaymentStatus.COMPLETED == paymentResponseAvroModel.getPaymentStatus()) {
+                    log.info("Processing successful payment for order id: {}", paymentResponseAvroModel.getOrderId());
+                    paymentResponseMessageListener.paymentCompleted(orderMessagingDataMapper
+                            .paymentResponseAvroModelToPaymentResponse(paymentResponseAvroModel));
+                } else if (PaymentStatus.CANCELLED == paymentResponseAvroModel.getPaymentStatus() ||
+                        PaymentStatus.FAILED == paymentResponseAvroModel.getPaymentStatus()) {
+                    log.info("Processing unsuccessful payment for order id: {}", paymentResponseAvroModel.getOrderId());
+                    paymentResponseMessageListener.paymentCancelled(orderMessagingDataMapper
+                            .paymentResponseAvroModelToPaymentResponse(paymentResponseAvroModel));
+                }
+                /**
+                 * Now, what about the other exceptions in the try block?
+                 * What will happen when some other exception is thrown during saga operation?
+                 * Since I don't catch the other exceptions
+                 * the exception will be propagated and spring will assume
+                 * that the event listener method call is failed,
+                 * and then it'll read the same message again from Kafka
+                 * so it actually does retry for a failed message automatically, which is great.
+                 */
+            } catch (OptimisticLockingFailureException e) {
+                // This exception is a result of duplicate message. So logging and ignoring is enough, we don't need any throw for that exception.
+                // And that exception can be thrown from the "process" or "rollback" methods in the OrderPaymentSaga class.
+                // NO-OP for optimistic lock. This means another thread finished the work, do not throw error to prevent reading the data from kafka again!
+                log.error("Caught optimistic locking exception in PaymentResponseKafkaListener for order id: {}",
+                        paymentResponseAvroModel.getOrderId());
+            } catch (OrderNotFoundException e) {
+                // NO-OP for OrderNotFoundException
+                log.error("No order found for order id: {}", paymentResponseAvroModel.getOrderId());
             }
         });
     }

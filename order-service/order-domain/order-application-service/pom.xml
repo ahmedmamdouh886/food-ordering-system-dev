@@ -22,6 +22,10 @@
         </dependency>
         <dependency>
             <groupId>com.food.ordering.system</groupId>
+            <artifactId>outbox</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.food.ordering.system</groupId>
             <artifactId>common-domain</artifactId>
         </dependency>
         <dependency>
@@ -31,6 +35,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
         <!-- There are some Mockito annotations that help minimize the code for creating and injecting mocks. While writing tests, there can be some repetitive statements. We will use annotations provided by Mockito to get rid of the redundant code and make our tests more readable. -->
         <dependency>

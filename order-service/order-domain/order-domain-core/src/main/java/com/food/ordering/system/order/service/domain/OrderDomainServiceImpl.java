@@ -22,8 +22,7 @@ public class OrderDomainServiceImpl implements OrderDomainService {
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(
             Order order,
-            Restaurant restaurant,
-            DomainEventPublisher<OrderCreatedEvent> orderCreatedMessagePublisher
+            Restaurant restaurant
     ) {
         validateRestaurant(restaurant);
         setOrderProductInformation(order, restaurant);
@@ -34,8 +33,7 @@ public class OrderDomainServiceImpl implements OrderDomainService {
 
         return new OrderCreatedEvent(
                 order,
-                ZonedDateTime.now(ZoneId.of(UTC)),
-                orderCreatedMessagePublisher
+                ZonedDateTime.now(ZoneId.of(UTC))
         );
     }
 
@@ -62,12 +60,12 @@ public class OrderDomainServiceImpl implements OrderDomainService {
     }
 
     @Override
-    public OrderPaidEvent payOrder(Order order, DomainEventPublisher<OrderPaidEvent> orderPaidMessagePublisher) {
+    public OrderPaidEvent payOrder(Order order) {
         order.pay();
 
         log.info("Order with id: {} is paid.", order.getId().getValue());
 
-        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderPaidMessagePublisher);
+        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
@@ -88,8 +86,7 @@ public class OrderDomainServiceImpl implements OrderDomainService {
     @Override
     public OrderCancelledEvent cancelOrderPayment(
             Order order,
-            List<String> failureMessages,
-            DomainEventPublisher<OrderCancelledEvent> orderCancelledMessagePublisher
+            List<String> failureMessages
     ) {
         order.initCancel(failureMessages);
 
@@ -97,8 +94,7 @@ public class OrderDomainServiceImpl implements OrderDomainService {
 
         return new OrderCancelledEvent(
                 order,
-                ZonedDateTime.now(ZoneId.of(UTC)),
-                orderCancelledMessagePublisher
+                ZonedDateTime.now(ZoneId.of(UTC))
         );
     }
 

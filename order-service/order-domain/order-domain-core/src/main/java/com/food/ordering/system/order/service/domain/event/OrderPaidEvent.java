@@ -6,21 +6,14 @@ import com.food.ordering.system.order.service.domain.entity.Order;
 
 import java.time.ZonedDateTime;
 
-public class OrderPaidEvent extends OrderEvent {
 
-    private final DomainEventPublisher<OrderPaidEvent> orderPaidEventDomainEventPublisher;
+// This event is used to publish a message to the restaurant service on the request-approval-request-topic.
+public class OrderPaidEvent extends OrderEvent {
 
     public OrderPaidEvent(
             Order order,
-            ZonedDateTime createdAt,
-            DomainEventPublisher<OrderPaidEvent> orderPaidEventDomainEventPublisher
+            ZonedDateTime createdAt
     ) {
         super(order, createdAt);
-        this.orderPaidEventDomainEventPublisher = orderPaidEventDomainEventPublisher;
-    }
-
-    @Override
-    public void fire() {
-        orderPaidEventDomainEventPublisher.publish(this);
     }
 }

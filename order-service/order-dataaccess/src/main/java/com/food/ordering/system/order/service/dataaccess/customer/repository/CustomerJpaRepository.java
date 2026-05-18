@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-@Repository // To make this interface aa Spring managed JPA Bean.
+@Repository // To make this interface a Spring managed JPA Bean.
 public interface CustomerJpaRepository extends JpaRepository<CustomerEntity, UUID> {
 
 }
