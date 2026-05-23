@@ -74,12 +74,12 @@ CREATE TABLE "order".payment_outbox
     saga_id uuid NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     processed_at TIMESTAMP WITH TIME ZONE,
-    type character varying COLLATE pg_catalog."default" NOT NULL, <!-- The type of the saga. and we have only one type of saga which is Order processing.  -->
-    payload jsonb NOT NULL, <!-- For the event data. This means that I need to serialize the event while putting it in the payment_outbox table and deserialize it while fetching it. -->
+    type character varying COLLATE pg_catalog."default" NOT NULL, -- The type of the saga. and we have only one type of saga which is Order processing.
+    payload jsonb NOT NULL, -- For the event data. This means that I need to serialize the event while putting it in the payment_outbox table and deserialize it while fetching it.
     outbox_status outbox_status NOT NULL,
     saga_status saga_status NOT NULL,
     order_status order_status NOT NULL,
-    version integer NOT NULL, <!-- I will use this field for optimistic locking. -->
+    version integer NOT NULL, -- I will use this field for optimistic locking.
     CONSTRAINT payment_outbox_pkey PRIMARY KEY (id)
 );
 
