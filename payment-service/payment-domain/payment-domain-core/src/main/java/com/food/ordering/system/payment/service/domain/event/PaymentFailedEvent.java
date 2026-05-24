@@ -11,8 +11,7 @@ public class PaymentFailedEvent extends PaymentEvent {
     public PaymentFailedEvent(
             Payment payment,
             ZonedDateTime createdAt,
-            List<String> failureMessages,
-            DomainEventPublisher<PaymentFailedEvent> paymentFailedEventDomainEventPublisher
+            List<String> failureMessages
     ) {
         super(payment, createdAt, failureMessages);
     }

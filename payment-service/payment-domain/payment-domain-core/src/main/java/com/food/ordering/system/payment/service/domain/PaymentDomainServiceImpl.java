@@ -57,9 +57,7 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
             Payment payment,
             CreditEntry creditEntry,
             List<CreditHistory> creditHistories,
-            List<String> failureMessages,
-            DomainEventPublisher<PaymentCancelledEvent> paymentCancelledEventDomainEventPublisher,
-            DomainEventPublisher<PaymentFailedEvent> paymentFailedMessagePublisher
+            List<String> failureMessages
     ) {
         payment.validatePayment(failureMessages);
         addCreditEntry(payment, creditEntry);
@@ -68,15 +66,14 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
         if (failureMessages.isEmpty()) {
             log.info("Payment is cancelled for order id: {}", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.CANCELLED);
-            return new PaymentCancelledEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), paymentCancelledEventDomainEventPublisher);
+            return new PaymentCancelledEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)));
         } else {
             log.info("Payment cancellation is failed for order id: {}", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.FAILED);
             return new PaymentFailedEvent(
                     payment,
                     ZonedDateTime.now(ZoneId.of(UTC)),
-                    failureMessages,
-                    paymentFailedMessagePublisher
+                    failureMessages
             );
         }
     }
