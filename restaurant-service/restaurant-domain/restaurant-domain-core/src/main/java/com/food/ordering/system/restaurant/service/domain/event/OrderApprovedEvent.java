@@ -14,11 +14,9 @@ public class OrderApprovedEvent extends OrderApprovalEvent {
             OrderApproval orderApproval,
             RestaurantId restaurantId,
             List<String> failureMessages,
-            ZonedDateTime createdAt,
-            DomainEventPublisher<OrderApprovedEvent> orderApprovedEventDomainEventPublisher
+            ZonedDateTime createdAt
     ) {
         super(orderApproval, restaurantId, failureMessages, createdAt);
-        this.orderApprovedEventDomainEventPublisher = orderApprovedEventDomainEventPublisher;
     }
 
     @Override
