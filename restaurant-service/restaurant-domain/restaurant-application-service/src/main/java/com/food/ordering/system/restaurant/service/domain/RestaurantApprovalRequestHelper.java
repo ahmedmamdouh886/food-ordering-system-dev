@@ -70,7 +70,6 @@ public class RestaurantApprovalRequestHelper {
                 OutboxStatus.STARTED,
                 UUID.fromString(restaurantApprovalRequest.getSagaId())
         );
-
     }
 
     private Restaurant findRestaurant(RestaurantApprovalRequest restaurantApprovalRequest) {
