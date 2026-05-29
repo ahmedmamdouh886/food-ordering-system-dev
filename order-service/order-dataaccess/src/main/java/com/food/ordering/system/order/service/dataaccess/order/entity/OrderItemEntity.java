@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 // It's required, because Spring will need no-args-constructor to create a proxy object from this class.
 @AllArgsConstructor // It's required to use the builder pattern with @Builder annotation. That's why we used it here.
-@IdClass(OrderItemEntityId.class) // So, this ID class annotation is required to use an ID class in an entity with multi column primary key.
+@IdClass(OrderItemEntityId.class) // So, this ID class annotation is required to use an ID class in an entity with multi-column primary key.
 @Table(name = "order_items")
 @Entity
 public class OrderItemEntity {
