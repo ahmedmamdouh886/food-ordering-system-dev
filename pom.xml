@@ -43,6 +43,8 @@
       It will simply have a dependency to all modules to create a single,
       runnable JAR file and run it as a microservice and also create a Docker image
       to use it later in cloud deployment.
+
+      I will use all these dependencies in the submodules without thinking about their versions, because I already set and managed the version here in a single place.
       -->
       <dependency>
         <groupId>com.food.ordering.system</groupId>
@@ -120,6 +122,33 @@
         <artifactId>restaurant-messaging</artifactId>
         <version>${project.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>customer-domain-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>customer-application-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>customer-application</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>customer-dataaccess</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.food.ordering.system</groupId>
+        <artifactId>customer-messaging</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>com.food.ordering.system</groupId>
         <artifactId>common-domain</artifactId>
