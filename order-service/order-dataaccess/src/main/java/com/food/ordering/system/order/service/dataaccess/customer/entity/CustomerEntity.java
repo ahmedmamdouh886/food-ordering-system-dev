@@ -19,10 +19,14 @@ import java.util.UUID;
  * problematic coupling between the services. Therefore, I prefer to use this approach for data required from
  * other domains.
  */
-@Table(name = "order_customer_m_view", schema = "customer") // As mentioned previously for the early examples, I will use a materialized view from the customer database schema in the order service.
+//@Table(name = "order_customer_m_view", schema = "customer") // As mentioned previously for the early examples, I will use a materialized view from the customer database schema in the order service.
+@Table(name = "customers") // The customer table is in the order database, it's part of the CQRS pattern implementation.
 @Entity
 public class CustomerEntity {
 
     @Id
     private UUID id;
+    private String username;
+    private String firstName;
+    private String lastName;
 }
