@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class BeanConfiguration {
+
     @Bean
-    public CustomerDomainService customerDomainService() {
+    public CustomerDomainService CustomerDomainService() {
         return new CustomerDomainServiceImpl();
     }
+
 }
