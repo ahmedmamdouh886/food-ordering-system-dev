@@ -34,6 +34,8 @@
     <kafka-avro-serializer.version>7.7.0</kafka-avro-serializer.version>
 <!--    <avro.version>1.11.1</avro.version>-->
     <avro.version>1.12.0</avro.version>
+    <maven.compiler.source>17</maven.compiler.source> <!-- Use java JDK 17 to create docker image. Explanation at 111. Deploying Microservices into local Kubernetes episode. section 12: Kubernetes -->
+    <maven.compiler.target>17</maven.compiler.target> <!-- Use java JDK 17 to create docker image. Explanation at 111. Deploying Microservices into local Kubernetes episode. section 12: Kubernetes -->
   </properties>
 
   <dependencyManagement>
